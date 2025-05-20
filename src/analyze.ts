@@ -11,7 +11,6 @@ export async function analyzer(url: string) {
     const page = await browser.newPage();
     const thirdPartyRequests: Set<string> = new Set();
     const mainDomain = requestUrl.hostname;
-    
     await page.setRequestInterception(true);
     
     page.on('request', request => {
@@ -20,7 +19,7 @@ export async function analyzer(url: string) {
         const currReqDomain = new URL(currReqUrl).hostname;
         
         // Capture third-party requests
-        if (currReqUrl !== mainDomain && currReqDomain!== 'about:blank') {
+        if (currReqDomain !== mainDomain && currReqDomain!== 'about:blank') {
           thirdPartyRequests.add(currReqDomain);
         }
         request.continue();
@@ -33,8 +32,8 @@ export async function analyzer(url: string) {
         timeout: 10000
     });
     // console.log(FINGERPRINTING_PATTERNS)
-    console.log(await fingerprintingPatterns(page));
-    console.log(findTrackers(thirdPartyRequests).slice(0,10));
+    console.log("Fingerprinting Patterns:",await fingerprintingPatterns(page));
+    console.log("Third Party Trackers:",findTrackers(thirdPartyRequests).slice(0,10));
     browser.close();
 }
 async function fingerprintingPatterns(page: Page) :Promise<string[]> {
